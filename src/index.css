@@ -74,6 +74,7 @@ body {
 .intro-lines { text-align: center; line-height: 2.1; color: var(--ink); font-size: 15.5px; letter-spacing: 0.1em; }
 .intro-presets { margin-top: 26px; display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; align-items: center; max-width: 480px; }
 .intro-presets > span { width: 100%; text-align: center; color: var(--ink-soft); font-size: 12.5px; }
+.intro-presets > span strong { color: var(--ink); font-weight: 700; letter-spacing: 0.12em; margin-right: 2px; }
 .intro-counter { margin-top: 22px; color: var(--ink-soft); font-size: 12.5px; letter-spacing: 0.06em; }
 
 .chip {
@@ -84,6 +85,8 @@ body {
 }
 .chip:hover { border-color: var(--q); color: var(--q); }
 .chip-rand { border-color: var(--gold); color: var(--gold); }
+.chip-d { border-color: var(--d); color: var(--d); }
+.chip-d:hover { border-color: var(--d); }
 
 .cta-btn {
   font-family: inherit; font-size: 16px; letter-spacing: 0.14em;

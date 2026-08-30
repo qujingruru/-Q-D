@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import { CONSTRUCTS, RELATIONSHIP_QUESTIONS } from '../src/questionnaire/constructs'
-import { drawQuestionnaire, scoreAnswers } from '../src/questionnaire/draw'
+import { autoAnswers, drawQuestionnaire, scoreAnswers } from '../src/questionnaire/draw'
 import { makeRng } from '../src/sim/rng'
+import { PERSONAS } from '../src/model/params'
 
 describe('question bank', () => {
   it('covers exactly the 12 constructs with 2+ variants each', () => {
@@ -73,3 +74,27 @@ function worstOption(item: { kind: string; options?: Array<{ score: number }> })
   if (item.kind !== 'choice') return 0
   return item.options!.reduce((worst, o, i) => (o.score < item.options![worst].score ? i : worst), 0)
 }
+
+describe('autoAnswers (preset persona → questionnaire answers)', () => {
+  it('reproduces a persona construct profile within one anchor step', () => {
+    for (const key of Object.keys(PERSONAS) as Array<keyof typeof PERSONAS>) {
+      const persona = PERSONAS[key].constructs
+      const drawn = drawQuestionnaire(makeRng(123))
+      const answers = autoAnswers(drawn, persona)
+      const [scored] = scoreAnswers(drawn, answers, answers)
+      for (const k of Object.keys(persona) as Array<keyof typeof persona>) {
+        // preset answers should land close to the persona's target construct
+        expect(Math.abs(scored[k] - persona[k])).toBeLessThanOrEqual(0.3)
+      }
+    }
+  })
+
+  it('respects reverse-scored likert items', () => {
+    const drawn = drawQuestionnaire(makeRng(123))
+    const extreme = { ...PERSONAS.avoidant.constructs }
+    const answers = autoAnswers(drawn, extreme)
+    // verify through the scorer: a high-avoidance persona must score high on avo
+    const [scored] = scoreAnswers(drawn, answers, answers)
+    expect(scored.avo).toBeGreaterThan(0.6)
+  })
+})

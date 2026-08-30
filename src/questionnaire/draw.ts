@@ -5,6 +5,7 @@
  */
 import { CONSTRUCTS, type ConstructDef, type Item } from './constructs'
 import type { Constructs, Rng } from '../types'
+export type { Constructs }
 
 export interface DrawnItem {
   constructId: keyof Constructs
@@ -74,6 +75,27 @@ function scoreOne(item: Item, answer: Answer): number {
 }
 
 const clamp01 = (x: number): number => (x < 0 ? 0 : x > 1 ? 1 : x)
+
+/**
+ * Derive per-item answers that reproduce a persona's construct profile —
+ * used by single-player mode (小D preset) and preset quick starts.
+ * Likert: construct 0..1 → anchor 1..5 (reverse items inverted).
+ * Choice: the option whose score is closest to the persona's construct.
+ */
+export function autoAnswers(items: DrawnItem[], c: Constructs): number[] {
+  return items.map(({ item, constructId }) => {
+    const target = c[constructId]
+    if (item.kind === 'likert') {
+      const norm = item.reverse === true ? 1 - target : target
+      return Math.max(1, Math.min(5, Math.round(norm * 4) + 1))
+    }
+    let best = 0
+    item.options.forEach((o, i) => {
+      if (Math.abs(o.score - target) < Math.abs(item.options[best].score - target)) best = i
+    })
+    return best
+  })
+}
 
 function blankConstructs(): Constructs {
   return {

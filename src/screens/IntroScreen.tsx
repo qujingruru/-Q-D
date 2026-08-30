@@ -6,6 +6,7 @@ import { useApp } from '../store'
 import { constructsToParams, PERSONAS, randomConstructs } from '../model/params'
 import { makeRng } from '../sim/rng'
 import { LocalCounter, counterText } from '../social/counter'
+import { autoAnswers, drawQuestionnaire } from '../questionnaire/draw'
 
 const PRESET_CHIPS: Array<{ label: string; a: keyof typeof PERSONAS; b: keyof typeof PERSONAS }> = [
   { label: '安全×安全', a: 'secure', b: 'secure' },
@@ -37,6 +38,15 @@ export function IntroScreen() {
     completeQuestionnaire([constructsToParams(randomConstructs(rng)), constructsToParams(randomConstructs(rng))])
   }
 
+  /** single-player mode: fill 小Q yourself, 小D is a preset persona */
+  const soloWithD = (personaKey: keyof typeof PERSONAS | 'random') => {
+    const seed = (Math.random() * 2 ** 31) | 0
+    const drawn = drawQuestionnaire(makeRng(seed))
+    const constructs =
+      personaKey === 'random' ? randomConstructs(makeRng(seed ^ 0x5bf03635)) : PERSONAS[personaKey].constructs
+    startQuestionnaire(seed, { side: 'd', answers: autoAnswers(drawn, constructs) })
+  }
+
   return (
     <div className="screen intro-screen">
       <StardustField theme="warm" />
@@ -54,7 +64,20 @@ export function IntroScreen() {
           {CTA_START}
         </button>
         <div className="intro-presets">
-          <span>或，用一组预设人设快速开始：</span>
+          <span>
+            <strong>单人模式</strong> · 我扮演小Q，而小D是：
+          </span>
+          {(Object.keys(PERSONAS) as Array<keyof typeof PERSONAS>).map((k) => (
+            <button key={k} className="chip chip-d" onClick={() => soloWithD(k)}>
+              {PERSONAS[k].label}的TA
+            </button>
+          ))}
+          <button className="chip chip-rand" onClick={() => soloWithD('random')}>
+            随机的TA ✦
+          </button>
+        </div>
+        <div className="intro-presets">
+          <span>或，两人都用预设快速开始：</span>
           {PRESET_CHIPS.map((c) => (
             <button key={c.label} className="chip" onClick={() => usePreset(c.a, c.b)}>
               {c.label}

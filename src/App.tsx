@@ -25,7 +25,7 @@ export default function App() {
   useEffect(() => {
     const invite = readInviteFromLocation()
     if (invite) {
-      startQuestionnaire(invite.s, invite.q)
+      startQuestionnaire(invite.s, { side: 'q', answers: invite.q })
       window.history.replaceState(null, '', window.location.pathname)
     }
   }, [startQuestionnaire])

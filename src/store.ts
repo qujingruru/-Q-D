@@ -51,8 +51,8 @@ interface AppState {
   drawn: DrawnItem[]
   answersQ: Array<number | null>
   answersD: Array<number | null>
-  /** invited mode: partner already answered Q side via link */
-  invitedQ: number[] | null
+  /** locked side: 'q' = invited partner answers, 'd' = preset persona */
+  lockedSide: 'q' | 'd' | null
   rel: RelAnswers
   persons: [PersonParams, PersonParams] | null
   masterSeed: number
@@ -61,7 +61,7 @@ interface AppState {
   scenarioResult: McResult | null
   go: (s: Screen) => void
   setTheme: (t: AppState['theme']) => void
-  startQuestionnaire: (seed?: number, invitedQ?: number[] | null) => void
+  startQuestionnaire: (seed?: number, prefill?: { side: 'q' | 'd'; answers: number[] } | null) => void
   answer: (side: 'q' | 'd', index: number, value: number) => void
   setRel: (r: RelAnswers) => void
   completeQuestionnaire: (persons: [PersonParams, PersonParams]) => void
@@ -81,7 +81,7 @@ const initial = {
   drawn: [] as DrawnItem[],
   answersQ: [] as Array<number | null>,
   answersD: [] as Array<number | null>,
-  invitedQ: null as number[] | null,
+  lockedSide: null as 'q' | 'd' | null,
   rel: { togetherMonths: 12, stage: 'steady' as const, satisfaction: 1.0 },
   persons: null,
   masterSeed: freshSeed(),
@@ -94,16 +94,16 @@ export const useApp = create<AppState>((set) => ({
   ...initial,
   go: (screen) => set({ screen }),
   setTheme: (theme) => set({ theme }),
-  startQuestionnaire: (seed, invitedQ) => {
+  startQuestionnaire: (seed, prefill) => {
     const sessionSeed = seed ?? freshSeed()
     const drawn = drawQuestionnaire(makeRng(sessionSeed))
     const blank = drawn.map(() => null)
     set({
       sessionSeed,
       drawn,
-      invitedQ: invitedQ ?? null,
-      answersQ: invitedQ ? [...invitedQ] : [...blank],
-      answersD: [...blank],
+      lockedSide: prefill?.side ?? null,
+      answersQ: prefill?.side === 'q' ? [...prefill.answers] : [...blank],
+      answersD: prefill?.side === 'd' ? [...prefill.answers] : [...blank],
       screen: 'questionnaire',
     })
   },

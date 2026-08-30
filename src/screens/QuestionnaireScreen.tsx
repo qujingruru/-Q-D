@@ -13,7 +13,7 @@ import type { RelAnswers } from '../store'
 const LIKERT = ['完全不像', '不太像', '一般', '比较像', '非常像']
 
 export function QuestionnaireScreen() {
-  const { drawn, answersQ, answersD, invitedQ, answer, completeQuestionnaire, setRel, sessionSeed } = useApp()
+  const { drawn, answersQ, answersD, lockedSide, answer, completeQuestionnaire, setRel, sessionSeed } = useApp()
   const [step, setStep] = useState(0) // 0..11 items, 12..14 rel, 15 done
   const [relLocal, setRelLocal] = useState<Partial<RelAnswers>>({})
   const [inviteUrl, setInviteUrl] = useState<string | null>(null)
@@ -69,7 +69,7 @@ export function QuestionnaireScreen() {
           <button className="back-btn" onClick={() => setStep(totalSteps - 1)}>
             ← 回去修改
           </button>
-          {!invitedQ && qDone && (
+          {lockedSide === null && qDone && (
             <div className="invite-box">
               <button className="chip" onClick={makeInvite}>
                 邀请TA来填TA的那一半 🔗
@@ -131,7 +131,7 @@ export function QuestionnaireScreen() {
           name="小Q"
           item={item}
           value={answersQ[itemIdx]}
-          locked={invitedQ !== null}
+          locked={lockedSide === 'q'}
           onSelect={(v) => {
             answer('q', itemIdx, v)
             if (answersD[itemIdx] !== null) setTimeout(goNext, 480)
@@ -142,7 +142,7 @@ export function QuestionnaireScreen() {
           name="小D"
           item={item}
           value={answersD[itemIdx]}
-          locked={false}
+          locked={lockedSide === 'd'}
           onSelect={(v) => {
             answer('d', itemIdx, v)
             if (answersQ[itemIdx] !== null) setTimeout(goNext, 480)
@@ -210,7 +210,7 @@ function AnswerColumn(props: {
       <div className="qa-col-head">
         <Creature who={who} mood={mood as 'happy' | 'calm'} size={64} />
         <span>{name}</span>
-        {locked && <em>TA已作答</em>}
+        {locked && <em>已设定</em>}
       </div>
       {item.kind === 'likert' ? (
         <LikertSlider value={value} locked={locked} onCommit={onSelect} />
