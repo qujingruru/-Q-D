@@ -1,0 +1,21 @@
+/** Literature anchors shown in the ending citations panel. */
+export const CITATIONS: Array<{ what: string; ref: string }> = [
+  { what: '耦合动力学与影响函数', ref: 'Gottman, Murray, Swanson, Tyson & Swanson (2002). The Mathematics of Marriage. MIT Press.' },
+  { what: '应激—脆弱性框架（VSA）', ref: 'Karney & Bradbury (1995). Psychological Bulletin, 118(1).' },
+  { what: '浪漫依恋', ref: 'Hazan & Shaver (1987); Fraley, Waller & Brennan (2000) ECR-R.' },
+  { what: '大五人格短表', ref: 'Gosling, Rentfrow & Swann (2003). JPSP（TIPI，改编）。' },
+  { what: '投资模型', ref: 'Rusbult, Martz & Agnew (1998); Le & Agnew (2003) 元分析。' },
+  { what: '爱情三角理论', ref: 'Sternberg (1986). Psychological Review, 93(2).' },
+  { what: '好事回应（capitalization）', ref: 'Gable, Reis, Impett & Asher (2004). JPSP.' },
+  { what: '自我扩展与激情衰减', ref: 'Aron & Aron; Acevedo & Aron (2009). SPPS.' },
+  { what: '追逃循环', ref: 'Christensen & Shenk (1991). demand–withdraw.' },
+  { what: '罗密欧与朱丽叶效应（证伪）', ref: 'Sinclair, Hood & Wright (2014). Social Psychology; 原始研究 Driscoll et al. (1972)。' },
+  { what: '异地恋与团聚冲击', ref: 'Stafford & Merolla (2007); Stafford, Merolla & Castle (2006). Personal Relationships.' },
+  { what: '家庭压力模型', ref: 'Conger et al. (1990–). Family Stress Model.' },
+  { what: '幻灭与 PAIR 项目', ref: 'Huston, Caughlin, Houts, Smith & George (2001).' },
+  { what: '同居：滑入 vs 决定', ref: 'Stanley, Rhoades & Markman (2006).' },
+  { what: '育儿冲击', ref: 'Cowan & Cowan (1995); Doss et al. (2009). JFP.' },
+  { what: '工作—家庭冲突', ref: 'Greenhaus & Beutell (1985). AMR.' },
+  { what: '分手与复合', ref: 'Dailey, Pfiester, Jin, Beck & Clark (2009).' },
+  { what: '情绪传染', ref: 'Hatfield, Cacioppo & Rapson (1994). Emotional Contagion.' },
+]
